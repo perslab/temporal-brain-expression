@@ -7,9 +7,10 @@ Click [here](http://www.brainspan.org/api/v2/well_known_file_download/267666525)
 For more information, see the BrainSpan Developmental Transcriptome webpage: http://www.brainspan.org/static/download.html
 
 ### Documentation
-1. Enter the correct paths in `CONFIG.R`.
-2. Run `read_rnaseq_data.R` to load and process the BrainSpan data. The script generates two `.RData` files.
-3. Perform analysis
+1. Download the BrainSpan data (click [here](http://www.brainspan.org/api/v2/well_known_file_download/267666525) to download).
+2. Enter the correct paths in `CONFIG.R`. This is needed to load the BrainSpan data and control where the output files of the script goes.
+3. Run `read_rnaseq_data.R` to load and process the BrainSpan data. The script generates two `.RData` files with the BrainSpan data.
+4. Perform analysis
   1. Run `graphics_genes_temporal_trajectories.R` to produce gene trajectory plots.
   2. Run `statistics_prenatal-vs-postnatal-test.R` to compare expression levels in prenatal vs postnatal developmental stages.
 
