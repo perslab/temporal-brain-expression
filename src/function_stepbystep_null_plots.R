@@ -16,9 +16,24 @@ plotMe <- function(list_of_alphas, plot_vline=TRUE) {
   ######################################## PLOT 95% confidence ################################
   #############################################################################################
   
-  sem.factor <- qnorm(0.975)/2 # 95% confidence interval (plus/minus)
-  print(sem.factor)
-  # *OBS* CORRECTION! 2015-09-12!!!
+  ##########################
+  ### Standard error of mean
+  # SEM = SE/sqrt(n), in our case we have n="number of brain structures"=length(unique(df.summary$structure_acronym))=26
+  # REFERENCE: http://en.wikipedia.org/wiki/Standard_error#Assumptions_and_usage
+  
+  ### 95 % confidence interval for the mean
+  # FORMULA: mean +- SEM*q(alpha)
+  # a) q(alpha) --> using a normal distribution | qnorm(0.975) --> ~1.96
+  # b) q(alpha) --> using a t-distribution | qt(0.975,df=26-1)=2.059539
+  
+  
+  stopifnot(length(unique(df.summary$structure_acronym))==26)
+  sem.factor <<- qnorm(0.975)/sqrt(26) # GLOBAL VARIBLE | needed to when "printing" the ggplot outside the function.
+    # this avoids the "object created inside function not found by ggplot" problem [e.g Error in eval(expr, envir, enclos) : object 'sem.factor' not found]
+  print(paste("sem.factor:", sem.factor))
+  ##########################
+  
+  
   
   p <- ggplot()
   ### Adding mean Prioritized
@@ -33,13 +48,13 @@ plotMe <- function(list_of_alphas, plot_vline=TRUE) {
 
   ### Adding NULL ASSOCIATED (median) - ribbon!
   p <- p + geom_line(data=df.null.median.summary.sem.assoc, aes(x=stage, y=mean1, group=1, color="Associated genes (Null)"), linetype='solid', size=1, alpha=list_of_alphas[["assoc_null_line"]])
-  #p <- p + geom_ribbon(data=df.null.median.summary.sem.assoc, aes(x=stage, group=1, ymin=mean1-sd1*sem.factor, ymax=mean1+sd1*sem.factor), alpha=list_of_alphas[["assoc_null_rib"]], fill='darkolivegreen4')
-  p <- p + geom_ribbon(data=df.null.median.summary.sem.assoc, aes(x=stage, group=1, ymin=mean1-sd1, ymax=mean1+sd1), alpha=list_of_alphas[["assoc_null_rib"]], fill='darkolivegreen4')
+  p <- p + geom_ribbon(data=df.null.median.summary.sem.assoc, aes(x=stage, group=1, ymin=mean1-sd1*sem.factor, ymax=mean1+sd1*sem.factor), alpha=list_of_alphas[["assoc_null_rib"]], fill='darkolivegreen4')
+  #p <- p + geom_ribbon(data=df.null.median.summary.sem.assoc, aes(x=stage, group=1, ymin=mean1-sd1, ymax=mean1+sd1), alpha=list_of_alphas[["assoc_null_rib"]], fill='darkolivegreen4')
   p
   ### Adding NULL PRIORITIZED (median) - ribbon!
   p <- p + geom_line(data=df.null.median.summary.sem.prio, aes(x=stage, y=mean1, group=1, color="Prioritized genes (Null)"), linetype='solid', size=1, alpha=list_of_alphas[["prio_null_line"]])
-  #p <- p + geom_ribbon(data=df.null.median.summary.sem.prio, aes(x=stage, group=1, ymin=mean1-sd1*sem.factor, ymax=mean1+sd1*sem.factor), alpha=list_of_alphas[["prio_null_rib"]], fill='lightskyblue3')
-  p <- p + geom_ribbon(data=df.null.median.summary.sem.prio, aes(x=stage, group=1, ymin=mean1-sd1, ymax=mean1+sd1), alpha=list_of_alphas[["prio_null_rib"]], fill='lightskyblue3')
+  p <- p + geom_ribbon(data=df.null.median.summary.sem.prio, aes(x=stage, group=1, ymin=mean1-sd1*sem.factor, ymax=mean1+sd1*sem.factor), alpha=list_of_alphas[["prio_null_rib"]], fill='#3182bd')
+  #p <- p + geom_ribbon(data=df.null.median.summary.sem.prio, aes(x=stage, group=1, ymin=mean1-sd1, ymax=mean1+sd1), alpha=list_of_alphas[["prio_null_rib"]], fill='#3182bd')
   p
   
   
@@ -51,7 +66,7 @@ plotMe <- function(list_of_alphas, plot_vline=TRUE) {
     "Nearest genes"="sky blue",
     "Associated genes"="orange",
     "Associated genes (Null)"="darkolivegreen4",
-    "Prioritized genes (Null)"="lightskyblue3",
+    "Prioritized genes (Null)"="#3182bd", # lightskyblue3 
     guide='legend'))
   
   #"Associated genes"="darkgoldenrod1",

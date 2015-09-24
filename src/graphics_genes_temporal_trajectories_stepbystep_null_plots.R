@@ -145,7 +145,7 @@ list_of_alphas[["assoc_mean"]] <- 1
 
 p <- plotMe(list_of_alphas)
 p
-p <- p + guides(colour = guide_legend(keywidth = 2, keyheight = 1, override.aes = list(alpha=c(1,0,0,0,0), size=c(1,1,3,1,3)))); p
+p <- p + guides(colour = guide_legend(keywidth = 2, keyheight = 1, override.aes = list(alpha=c(1,1,0,0,0), size=c(1,1,3,1,3)))); p
 saveMe(p, "plot1_null")
 
 

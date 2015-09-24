@@ -16,7 +16,22 @@ plotMe <- function(list_of_alphas, plot_vline=TRUE) {
   ######################################## PLOT 95% confidence ################################
   #############################################################################################
   
-  sem.factor <- qnorm(0.975) # 95% confidence interval (plus/minus)
+  ##########################
+  ### Standard error of mean
+  # SEM = SE/sqrt(n), in our case we have n="number of brain structures"=length(unique(df.summary$structure_acronym))=26
+  # REFERENCE: http://en.wikipedia.org/wiki/Standard_error#Assumptions_and_usage
+  
+  ### 95 % confidence interval for the mean
+  # FORMULA: mean +- SEM*q(alpha)
+  # a) q(alpha) --> using a normal distribution | qnorm(0.975) --> ~1.96
+  # b) q(alpha) --> using a t-distribution | qt(0.975,df=26-1)=2.059539
+  
+  
+  stopifnot(length(unique(df.summary$structure_acronym))==26)
+  sem.factor <<- qnorm(0.975)/sqrt(26) # GLOBAL VARIBLE | needed to when "printing" the ggplot outside the function.
+   # this avoids the "object created inside function not found by ggplot" problem [e.g Error in eval(expr, envir, enclos) : object 'sem.factor' not found]
+  print(paste("sem.factor:", sem.factor))
+  ##########################
   
   p <- ggplot()
   ### Prioritized (for each structure)

@@ -155,15 +155,21 @@ ggsave(file=filename.plot, w=9, h=6)
 # USED FOR PUBLICATION
 #############################################################################################
 
-### Option 1: use 95 % confidence interval
-# a) using a normal distribution | qnorm(0.975) --> ~1.96
-# b) using a t-distribution | qt(0.975,df=26-1)=2.059539
-### Option 2: Standard error of mean
-# a) SEM = SE/sqrt(n) = SE/sqrt(26)
-# SEE also http://en.wikipedia.org/wiki/Standard_error#Assumptions_and_usage
-### CONCLUSION
-# We use Option 1a)
-sem.factor <- qnorm(0.975) # 95% confidence interval (plus/minus)
+##########################
+### Standard error of mean
+# SEM = SE/sqrt(n), in our case we have n="number of brain structures"=length(unique(df.summary$structure_acronym))=26
+# REFERENCE: http://en.wikipedia.org/wiki/Standard_error#Assumptions_and_usage
+
+### 95 % confidence interval for the mean
+# FORMULA: mean +- SEM*q(alpha)
+# a) q(alpha) --> using a normal distribution | qnorm(0.975) --> ~1.96
+# b) q(alpha) --> using a t-distribution | qt(0.975,df=26-1)=2.059539
+
+
+stopifnot(length(unique(df.summary$structure_acronym))==26)
+sem.factor <- qnorm(0.975)/sqrt(26) # 95% confidence interval (plus/minus)
+##########################
+
 
 p <- ggplot()
 p <- p + geom_line(data=subset(df.summary, gene_list == "Prioritized Genes"), aes(x=stage, y=mean, group=structure_acronym, color="Prioritized genes (structures)")) #linetype="Brain regions"
